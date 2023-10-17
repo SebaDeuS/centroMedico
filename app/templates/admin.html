@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/admin.css" %}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+</head>
+
+<body>
+    <aside class="aside active" id="aside">
+        <div class="head">
+            <div class="profile">
+                <img src="../static/img/doctor3.png" alt="">
+                <p>Usuario</p>
+            </div>
+            <i class='bx bx-menu' id="menu"></i>
+        </div>
+        <div class="options">
+            <div>
+                <i class='bx bxs-user'></i>
+                <a href="{% url "cliente" %}" class="option">Cliente</a>
+            </div>
+            <div>
+                <i class='bx bxs-user'></i>
+                <a href="" class="option">Medico</a>
+
+            </div>
+            <div>
+                <i class='bx bx-clipboard'></i>
+                <a href="" class="option">Asignar agenda</a>
+            </div>
+            <div>
+                <i class='bx bxs-cog'></i>
+                <a href="" class="option">Configuracion</a>
+            </div>
+
+    </aside>
+
+    {% block contenido %}{% endblock contenido %}
+
+
+    <script src="https://kit.fontawesome.com/79e89e50d7.js" crossorigin="anonymous"></script>
+    <script src="../static/js/index.js"></script>
+</body>
+
+</html>
