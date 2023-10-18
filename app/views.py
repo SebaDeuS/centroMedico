@@ -15,3 +15,13 @@ def usuario(request):
 
 def cliente(request):
     return render(request, 'cliente.html')
+
+
+def registro(request):
+    return render(request, 'registro.html')
+
+def login(request):
+    return render(request, 'login.html')
+
+def medico(request):
+    return render(request, 'medico.html')

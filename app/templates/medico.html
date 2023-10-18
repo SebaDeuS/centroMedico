@@ -1,0 +1,28 @@
+{% extends "admin.html" %}
+
+{% block contenido %}
+<div class="table">
+    <table class="table table-striped">
+      <thead>
+        <tr class="table table-dark">
+          <th scope="col">Nombre</th>
+          <th scope="col">Especialidad</th>
+          <th scope="col">Correo</th>
+          <th></th>
+        </tr>
+      </thead>
+  
+      <tbody>
+        <tr class="table table-default">
+          <td>Sebastian</td>
+          <td>cirujano</td>
+          <td>sebita@ldasds.com</td>
+          <td>
+            <a class="btn btn-primary me-2" href="#">Editar</a
+            ><a class="btn btn-danger" href="#">Eliminar</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock contenido %}
