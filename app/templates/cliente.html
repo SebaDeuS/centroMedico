@@ -13,15 +13,17 @@
       </thead>
   
       <tbody>
-        <tr class="table table-default">
-          <td>Sebastian</td>
-          <td>Morales</td>
-          <td>Cifuentes</td>
+          {% for row in data%}
+          <tr class="table table-default">
+            <td>{{row.nombre}}</td>
+            <td>{{row.run}}</td>
+            <td>{{row.correo}}</td>
           <td>
             <a class="btn btn-primary me-2" href="#">Editar</a
             ><a class="btn btn-danger" href="#">Eliminar</a>
           </td>
-        </tr>
+          </tr>
+          {% endfor %}
       </tbody>
     </table>
   </div>

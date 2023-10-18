@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import requests
 # Create your views here.
 
 
@@ -14,8 +15,13 @@ def usuario(request):
 
 
 def cliente(request):
-    return render(request, 'cliente.html')
-
+    r = requests.post("https://centromedico--juaborquez.repl.co/api/usuarios/medico")
+    if r.status_code==200:
+        data = r.json()
+        print(r)
+    else:
+        print("error")
+    return render(request, 'cliente.html', {"data":data})
 
 def registro(request):
     return render(request, 'registro.html')
