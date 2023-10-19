@@ -13,15 +13,17 @@
       </thead>
   
       <tbody>
+        {% for row in data%}
         <tr class="table table-default">
-          <td>Sebastian</td>
-          <td>cirujano</td>
-          <td>sebita@ldasds.com</td>
+          <td>{{row.nombre}}</td>
+          <td>{{row.especialidad.nom_esp}}</td>
+          <td>{{row.correo}}</td>
           <td>
             <a class="btn btn-primary me-2" href="#">Editar</a
-            ><a class="btn btn-danger" href="#">Eliminar</a>
+            ><a class="btn btn-danger" href="#">Deshabilitar</a>
           </td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>

@@ -15,13 +15,15 @@ def usuario(request):
 
 
 def cliente(request):
-    r = requests.post("https://centromedico--juaborquez.repl.co/api/usuarios/medico")
+    
+    r = requests.get("https://centromedico--juaborquez.repl.co/api/usuarios/")
     if r.status_code==200:
         data = r.json()
         print(r)
     else:
+        data = None
         print("error")
-    return render(request, 'cliente.html', {"data":data})
+    return render(request, 'cliente.html', {"data": data})
 
 def registro(request):
     return render(request, 'registro.html')
@@ -30,4 +32,11 @@ def login(request):
     return render(request, 'login.html')
 
 def medico(request):
-    return render(request, 'medico.html')
+    r = requests.get("https://centromedico--juaborquez.repl.co/api/usuarios/medico")
+    if r.status_code==200:
+        data = r.json()
+        print(r)
+    else:
+        data = None
+        print("error")
+    return render(request, 'medico.html', {"data":data})
