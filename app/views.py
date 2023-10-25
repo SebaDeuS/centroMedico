@@ -29,6 +29,24 @@ def cliente(request):
         print("error")
     return render(request, 'cliente.html', {"data": data})
 
+def deshabilitarCliente(request, rut):
+
+    
+    if request.method == "POST":
+        data ={
+            'run': rut  
+        }
+        print(rut)
+        response = requests.patch("https://medicocentro--juaborquez.repl.co/api/usuarios/deshabilitar", json=data)
+        if response.status_code == 200:
+                messages.success(request, "Paciente deshabilitado")
+                return redirect(to=cliente)
+        
+            
+
+
+    return render(request, 'cliente.html')
+
 
 def registroUsuario(request):
     if request.method == "POST":
@@ -93,3 +111,6 @@ def medico(request):
         data = None
         print("error")
     return render(request, 'medico.html', {"data":data})
+
+def paciente(request):
+    return render(request,'paciente.html')
