@@ -29,66 +29,47 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
+    <link rel="stylesheet" href="{% static "css/index.css" %}">
+
   </head>
   <body>
     <header>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">Centro Medico</a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#"
-                  >Inicio</a
-                >
+                <a class="nav-link active" aria-current="page" href="#">Inicio</a>
               </li>
               <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
                   Nosotros
                 </a>
                 <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Contacto</a></li>
                   <li><a class="dropdown-item" href="#">Direccion</a></li>
-                  <li></li>
+                  <li>
+                  </li>
                 </ul>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#"
-                  >Agendar hora</a
-                >
+                <a class="nav-link active" aria-current="page" href="#">Agendar hora</a>
               </li>
             </ul>
             <form class="d-flex" role="search">
-              <input
-                class="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-success" type="submit">
-                Buscar
-              </button>
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Buscar</button>
             </form>
           </div>
         </div>
-      </nav>                                                
+      </nav>
+  
     </header>
     
     {% block contenido %}

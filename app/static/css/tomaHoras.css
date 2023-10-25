@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+div#gerenal{
+    
+    width: 400px;
+    height: 400px;
+    background-color: aquamarine;
+}
