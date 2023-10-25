@@ -40,7 +40,7 @@ def validar_rut_chileno(value):
 '''
 
 class RegistroForm(forms.Form):
-    rut = forms.CharField(label="RUT", max_length=10, min_length=10, validators=[validar_rut]) 
+    rut = forms.CharField(label="RUT", max_length=10, min_length=9, validators=[validar_rut]) 
     nombre = forms.CharField(label="Nombre")
     email = forms.EmailField(label="Correo electrónico")
     password = forms.CharField(label="Contraseña", widget=forms.PasswordInput())

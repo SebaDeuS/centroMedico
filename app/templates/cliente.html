@@ -10,7 +10,7 @@
           <th scope="col">Nombre</th>
           <th scope="col">R.U.T</th>
           <th scope="col">Correo</th>
-          <th></th>
+          <th scope="col">Opciones</th>
         </tr>
       </thead>
   
@@ -22,7 +22,6 @@
             <td>{{row.run}}</td>
             <td>{{row.correo}}</td>
           <td>
-            <a class="btn btn-primary me-2" href="#">Editar</a>
             <form action="{% url 'deshabilitar' row.run %}" method="POST"> 
               {% csrf_token %}
               <button id="estado" class="btn btn-danger" type="submit" >Deshabilitar</button> 
@@ -36,7 +35,3 @@
   </div>
   
 {% endblock contenido %}
-
-
-
-
