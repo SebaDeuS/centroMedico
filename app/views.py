@@ -84,13 +84,18 @@ def login(request):
                 'email': form.cleaned_data['email'],
                 'contrasena': form.cleaned_data['password'],
             }
-
-
+            print(data)
             response = requests.get('https://medicocentro--juaborquez.repl.co/api/usuarios/login/', json=data)
+            print(requests.get('https://medicocentro--juaborquez.repl.co/api/usuarios/login/', json=data))
 
             if response.status_code == 200:
-                messages.success(request, 'Te haz logeado correctamente')
-                return redirect(to=index)
+                respuesta = response.json()
+                print(respuesta)
+                if respuesta.get("msg"):
+                    messages.success(request, 'Te haz logeado correctamente')
+                    return redirect(to=index)
+                else:
+                    messages.error(request, 'Correo o contraseña incorrecta')
             else:
                 form.add_error(None, "Correo electrónico o contraseña incorrectos. Por favor, inténtalo de nuevo.")
         else:
