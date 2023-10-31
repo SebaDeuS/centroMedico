@@ -92,8 +92,8 @@ def login(request):
                 respuesta = response.json()
                 print(respuesta)
                 if respuesta.get("msg"):
-                    messages.success(request, 'Te haz logeado correctamente')
-                    return redirect(to=index)
+                    messages.success(request, 'Se ha logueado correctamente')
+                    return redirect(to=cliente)
                 else:
                     messages.error(request, 'Correo o contraseña incorrecta')
             else:
