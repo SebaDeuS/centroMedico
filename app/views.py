@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 import requests
 from django.contrib import messages
-from .forms import  RegistroForm, LoginForm
+from .forms import  RegistroForm, LoginForm, AgregarMedico
 # Create your views here.
 
 
@@ -41,11 +41,19 @@ def deshabilitarCliente(request, rut):
         if response.status_code == 200:
                 messages.success(request, "Paciente deshabilitado")
                 return redirect(to=cliente)
-        
-            
-
-
     return render(request, 'cliente.html')
+
+def deshabilitarMedico(request, rut):
+    if request.method == "POST":
+        data ={
+            'run': rut  
+        }
+        print(rut)
+        response = requests.patch("https://medicocentro--juaborquez.repl.co/api/usuarios/deshabilitar", json=data)
+        if response.status_code == 200:
+                messages.success(request, "Medico deshabilitado")
+                return redirect(to=medico)
+    return render(request, 'medico.html')
 
 
 def registroUsuario(request):
@@ -115,7 +123,40 @@ def medico(request):
     else:
         data = None
         print("error")
+
     return render(request, 'medico.html', {"data":data})
+
+
 
 def paciente(request):
     return render(request,'paciente.html')
+
+def agregarMedico(request):
+    if request.method == "POST":
+        form = AgregarMedico(request.POST)
+        if form.is_valid():
+            data = {
+                'run': form.cleaned_data['rut'],
+                'nombre': form.cleaned_data['nombre'],
+                'especialidad': form.cleaned_data['especialidad'],
+                'correo': form.cleaned_data['email'],
+                'contrasena': form.cleaned_data['password'],
+                'tipo_usuario' : 1,
+            }
+        
+
+            response = requests.post('https://medicocentro--juaborquez.repl.co/api/usuarios/add/', json=data)
+
+            if response.status_code == 200:
+                messages.success(request, "medico agregado correctamente")
+                return redirect(to=medico)
+            else:
+                form.add_error(None, "Error al registrar el usuario en la API")
+    else:
+        form = AgregarMedico()
+
+    return render(request, "medico.html", {"form": form})
+
+
+def paciente(request):
+    return render(request, "paciente.html")
