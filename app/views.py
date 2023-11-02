@@ -149,13 +149,14 @@ def agregarMedico(request):
 
             if response.status_code == 200:
                 messages.success(request, "medico agregado correctamente")
-                return redirect(to=medico)
+                #Envia una respuesta vacia para evitar que la vista se renderice en el modal y refresca la pagina
+                return HttpResponse(status=204, headers={'HX-refresh': 'true'})
             else:
                 form.add_error(None, "Error al registrar el usuario en la API")
     else:
         form = AgregarMedico()
 
-    return render(request, "medico.html", {"form": form})
+    return render(request, "agregarMedicoForm.html", {"form": form})
 
 
 def paciente(request):
