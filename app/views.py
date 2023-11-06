@@ -161,3 +161,7 @@ def agregarMedico(request):
 
 def paciente(request):
     return render(request, "paciente.html")
+
+
+def tomaHoras(request):
+    return render(request, "tomaHoras.html")
