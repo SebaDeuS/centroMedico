@@ -12,6 +12,7 @@
     <table class="table table-striped">
       <thead>
         <tr class="table table-dark">
+          <th scope="col">run</th>
           <th scope="col">Nombre</th>
           <th scope="col">Especialidad</th>
           <th scope="col">Correo</th>
@@ -22,14 +23,15 @@
       <tbody>
         {% for row in data%}
         <tr class="table table-default">
+          <td>{{row.run}}</td>
           <td>{{row.nombre}}</td>
           <td>{{row.especialidad.nom_esp}}</td>
           <td>{{row.correo}}</td>
           <td>
             <div class="d-flex">
-              <form action="" method="POST">
-                {% csrf_token %} 
-                <a class="btn btn-primary me-2" href="#">Asignar</a>
+              <form action="{% url "asignarDisponibilidad" row.run %}" method="POST">
+                {% csrf_token %}
+                <button id="estado" class="btn btn-primary me-2" type="submit" >Asignar</button>  
               </form>
               <form action="" method="POST">
                 {% csrf_token %} 

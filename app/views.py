@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 import requests
 from django.contrib import messages
-from .forms import  RegistroForm, LoginForm, AgregarMedico
+from .forms import  RegistroForm, LoginForm, AgregarMedico, agregarDisponibilidad
 # Create your views here.
 
 
@@ -136,7 +136,7 @@ def agregarMedico(request):
         form = AgregarMedico(request.POST)
         if form.is_valid():
             data = {
-                'run': form.cleaned_data['rut'],
+                'run': form.cleaned_data['rut'].lower(),
                 'nombre': form.cleaned_data['nombre'],
                 'especialidad': form.cleaned_data['especialidad'],
                 'correo': form.cleaned_data['email'],
@@ -145,7 +145,7 @@ def agregarMedico(request):
             }
         
 
-            response = requests.post('https://medicocentro--juaborquez.repl.co/api/usuarios/add/', json=data)
+            response = requests.post('https://medicocentro--juaborquez.repl.co/api/usuarios/add/medico/', json=data)
 
             if response.status_code == 200:
                 messages.success(request, "medico agregado correctamente")
@@ -165,3 +165,11 @@ def paciente(request):
 
 def tomaHoras(request):
     return render(request, "tomaHoras.html")
+
+def asignarDispo(request, rut):
+
+
+
+    form = agregarDisponibilidad()
+    form.initial['rut'] = rut
+    return render(request, "asignarDisponibilidad.html", {"form" : form})
