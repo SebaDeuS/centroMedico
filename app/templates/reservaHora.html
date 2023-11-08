@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <h4>Seleccionar especialidad</h4>
                         <hr>
-                        <form method="post">
+                        <form method="POST">
                             {% csrf_token %}
                             
                             {{form|crispy}}
