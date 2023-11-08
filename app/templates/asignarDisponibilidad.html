@@ -21,10 +21,11 @@
                         <hr>
                         <form method="post">
                             {% csrf_token %}
-                            
+
                             {{form|crispy}}
                             <div class="d-flex justify-content-between">
-                                <button class="btn btn-primary" type="submit">Asignar</button> 
+                                <button class="btn btn-primary" type="submit">Asignar</button>
+                                <a href="{% url "medico" %}">Volver</a>
                             </div>                                                                                                   
                         </form>
 

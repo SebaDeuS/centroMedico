@@ -17,7 +17,11 @@
             <div class="col-12 col-md-6 offset-md-3">
                 <div class="card">
                     <div class="card-body">
-                        <h4>Ingresa</h4>
+                        <div class="d-flex justify-content-between">
+                            <h4>Ingresa</h4>
+                            <a href="{% url "index" %}">Volver</a>
+                        </div>
+                        
                         <hr>
                         <form method="post">
                             {% csrf_token %}
@@ -29,7 +33,9 @@
                             <div class="d-flex justify-content-between">
                                 <a href="{% url "registro" %}">¿No tienes una cuenta?</a>
                                 <button class="btn btn-primary" type="submit">Ingresar</button> 
-                            </div> 
+                            </div>
+
+                            
                                                                                                                             
                         </form>
 

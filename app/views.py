@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 import requests
 from django.contrib import messages
+from datetime import time
 from .forms import  RegistroForm, LoginForm, AgregarMedico, agregarDisponibilidad
 # Create your views here.
 
@@ -159,6 +160,8 @@ def agregarMedico(request):
     return render(request, "agregarMedicoForm.html", {"form": form})
 
 
+
+
 def paciente(request):
     return render(request, "paciente.html")
 
@@ -167,9 +170,62 @@ def tomaHoras(request):
     return render(request, "tomaHoras.html")
 
 def asignarDispo(request, rut):
+    if request.method == "POST":
+        form = agregarDisponibilidad(request.POST)
+        form.initial['rut'] = rut
 
+        if form.is_valid():
+            hora_inicio_cadena = form.cleaned_data['hora_inicio'].strftime('%H:%M')
+            hora_termino_cadena = form.cleaned_data['hora_termino'].strftime('%H:%M')
+            data = {
+                'run_medico' : form.cleaned_data['rut'],
+                'dia_semana' : form.cleaned_data['dia'],
+                'hora_inicio' : hora_inicio_cadena,
+                'hora_termino' : hora_termino_cadena,
+                'estado' : True,
+                'tiempo_por_consulta_min' : form.cleaned_data['tiempo_consulta'],
+            }
 
-
-    form = agregarDisponibilidad()
-    form.initial['rut'] = rut
+            response = requests.post('https://medicocentro--juaborquez.repl.co/api/disponibilidad/add/', json=data)
+            
+            if response.status_code == 200:
+                messages.success(request, "Disponibilidad agregada correctamente")
+                
+                return redirect(to=medico)
+            else:
+                form.add_error(None, "Error al agregar disponibilidad en la API")
+        
+    else:
+        form = agregarDisponibilidad()
     return render(request, "asignarDisponibilidad.html", {"form" : form})
+
+
+
+def listadoDisMedico(request, rut):
+    data ={
+            'run': rut  
+        }
+    r = requests.get("https://medicocentro--juaborquez.repl.co/api/disponibilidad/medico/", json=data)
+    if r.status_code==200:
+        data = r.json()
+        print(r)
+    else:
+        data = None
+        print("error")
+    return render(request, "listadoDisMedico.html", {"data":data})
+
+
+
+def deshabilitarDisponibilidad(request, rut):
+    if request.method == "POST":
+        data ={
+            'run': rut  
+        }
+        print(rut)
+        response = requests.patch("https://medicocentro--juaborquez.repl.co/api/usuarios/deshabilitar", json=data)
+        if response.status_code == 200:
+                messages.success(request, "Disponibilidad deshabilitada")
+                return redirect(to=listadoDisMedico)
+    return render(request, 'listadoDisMedico')
+
+

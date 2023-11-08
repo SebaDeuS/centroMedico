@@ -6,6 +6,9 @@
 
 {% load crispy_forms_tags %}
 <div class="table">
+  <div class="d-flex justify-content-center">
+    <h1>Listado medicos</h1>
+  </div>
     <div class="card-body d-flex justify-content-end">
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarMedicoModal" hx-get="{% url "agregarMedico" %}" hx-target="#dialog">Agregar medico</button>
     </div>
@@ -32,6 +35,10 @@
               <form action="{% url "asignarDisponibilidad" row.run %}" method="POST">
                 {% csrf_token %}
                 <button id="estado" class="btn btn-primary me-2" type="submit" >Asignar</button>  
+              </form>
+              <form action="{% url "listadoDisMedico" row.run %}" method="POST">
+                {% csrf_token %}
+                <button id="estado" class="btn btn-primary me-2" type="submit" >Ver</button>  
               </form>
               <form action="" method="POST">
                 {% csrf_token %} 

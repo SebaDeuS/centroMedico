@@ -88,10 +88,10 @@ class AgregarMedico(forms.Form):
         r = requests.get(api_url)
 
         if r.status_code == 200:
-           data = r.json()
-           self.fields['especialidad'].choices = [(especialidad['esp_id'], especialidad['nom_esp']) for especialidad in data] 
+            data = r.json()
+            self.fields['especialidad'].choices = [(especialidad['esp_id'], especialidad['nom_esp']) for especialidad in data] 
         else:
-           self.fields['especialidad'].choices = [('', 'error al recuperar la data')] 
+            self.fields['especialidad'].choices = [('', 'error al recuperar la data')] 
     
 
 
@@ -110,12 +110,12 @@ class agregarDisponibilidad(forms.Form):
 
     def get_dias(self):
         dias = [
-            ('1', 'Lunes'),
-            ('2', 'Martes'),
-            ('3', 'Miércoles'),
-            ('4', 'Jueves'),
-            ('5', 'Viernes'),
-            ('6', 'Sábado')
+            ('Lunes', 'Lunes'),
+            ('Martes', 'Martes'),
+            ('Miercoles', 'Miércoles'),
+            ('Jueves', 'Jueves'),
+            ('Viernes', 'Viernes'),
+            ('Sabado', 'Sábado')
         ]
         return dias
     

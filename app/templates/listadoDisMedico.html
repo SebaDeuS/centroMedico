@@ -1,0 +1,50 @@
+{% extends "admin.html" %}
+
+
+{% block contenido %}
+
+
+{% load crispy_forms_tags %}
+
+
+<div class="table">
+    {% for row in data%}
+    <div class="d-flex justify-content-center">
+        <h1>Disponibilidad de {{ row.run_medico }}</h1>
+    </div>
+    {% endfor %}
+    <div class="card-body d-flex justify-content-end">
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr class="table table-dark">
+            <th scope="col">Dia</th>
+            <th scope="col">Hora inicio</th>
+            <th scope="col">Hora termino</th>
+            <th scope="col">Tiempo consulta</th>
+            <th></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for row in data%}
+            <tr class="table table-default">
+            <td>{{row.dia_semana}}</td>
+            <td>{{row.hora_inicio}}</td>
+            <td>{{row.hora_termino}}</td>
+            <td>{{row.tiempo_por_consulta_min}}</td>
+            <td>
+                <div class="d-flex">
+                    <form action="{% url 'deshabilitarDisponibilidad' row.run_medico %}" method="POST">
+                        {% csrf_token %} 
+                        <button id="estado" class="btn btn-danger" type="submit" >Deshabilitar</button> 
+                    </form>
+                </div>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock contenido %}
