@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, admin, tomaHoras, cliente, login, registroUsuario, medico, paciente, deshabilitarCliente, deshabilitarMedico,agregarMedico, tomaHoras, asignarDispo, reservaHora
+from .views import index, admin, tomaHoras, cliente, login, registroUsuario, medico, paciente, deshabilitarCliente, deshabilitarMedico,agregarMedico, tomaHoras, asignarDispo, reservaHora, calendario
 
 urlpatterns = [
     path('', index, name='index'),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('agregarMedico', agregarMedico, name='agregarMedico'),
     path('tomaHoras', tomaHoras, name='tomaHoras'),
     path('asignarDispo/<str:rut>', asignarDispo, name='asignarDisponibilidad'),
-    path("reservaHora", reservaHora, name="reservaHora")
+    path("reservaHora", reservaHora, name="reservaHora"),
+    path("calendario", calendario, name="calendario")
 ]
 

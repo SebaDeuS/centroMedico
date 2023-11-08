@@ -3,6 +3,8 @@ from django import forms
 from itertools import cycle
 from django.core.exceptions import ValidationError
 import requests
+from django.forms.widgets import SelectDateWidget
+
 
 def validar_rut(rut):
   rut = rut.upper();
@@ -125,7 +127,8 @@ class nuevaHora(forms.Form):
     
     
     def __init__(self, *args, **kwargs):
-        super(AgregarMedico, self).__init__(*args, **kwargs)
+
+        super(nuevaHora, self).__init__(*args, **kwargs)
 
         api_url = 'https://medicocentro--juaborquez.repl.co/api/especialidad/'
 
@@ -136,5 +139,9 @@ class nuevaHora(forms.Form):
            self.fields['especialidad'].choices = [(especialidad['esp_id'], especialidad['nom_esp']) for especialidad in data] 
         else:
            self.fields['especialidad'].choices = [('', 'error al recuperar la data')] 
+
+class fechaHora(forms.Form):
+
+    date = forms.DateField( widget= forms.TextInput(attrs = {'class' : 'datepicker'}))
     
 
