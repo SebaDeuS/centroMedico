@@ -118,4 +118,23 @@ class agregarDisponibilidad(forms.Form):
             ('6', 'Sábado')
         ]
         return dias
+
+#
+class nuevaHora(forms.Form):
+    especialidad = forms.ChoiceField(label = "Especialidad", choices=[], widget= forms.Select(attrs={'placeholder': 'Selecciona una especialidad'}))
     
+    
+    def __init__(self, *args, **kwargs):
+        super(AgregarMedico, self).__init__(*args, **kwargs)
+
+        api_url = 'https://medicocentro--juaborquez.repl.co/api/especialidad/'
+
+        r = requests.get(api_url)
+
+        if r.status_code == 200:
+           data = r.json()
+           self.fields['especialidad'].choices = [(especialidad['esp_id'], especialidad['nom_esp']) for especialidad in data] 
+        else:
+           self.fields['especialidad'].choices = [('', 'error al recuperar la data')] 
+    
+
