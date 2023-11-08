@@ -8,11 +8,9 @@
 
 
 <div class="table">
-    {% for row in data%}
     <div class="d-flex justify-content-center">
-        <h1>Disponibilidad de {{ row.run_medico }}</h1>
+        <h1>Disponibilidad Medicos</h1>
     </div>
-    {% endfor %}
     <div class="card-body d-flex justify-content-end">
         <div class="card-body d-flex justify-content-end">
             <a href="{% url "medico" %}" class="btn btn-primary">Volver</a>
@@ -25,7 +23,7 @@
             <th scope="col">Hora inicio</th>
             <th scope="col">Hora termino</th>
             <th scope="col">Tiempo consulta</th>
-            <th scope="col">estado</th>
+            <th scope="col">Estado</th>
             <th scope="col">Opciones</th>
             </tr>
         </thead>
@@ -40,7 +38,7 @@
             <td>{{row.estado}}</td>
             <td>
                 <div class="d-flex">
-                    <form action="{% url 'deshabilitarDisponibilidad' row.disp_id %}" method="POST">
+                    <form action="{% url 'deshabilitarDisponibilidadTodos' row.disp_id %}" method="POST">
                         {% csrf_token %} 
                         <button id="estado" class="btn btn-danger" type="submit" >Deshabilitar</button> 
                     </form>

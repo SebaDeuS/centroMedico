@@ -26,12 +26,16 @@
         <div class="options">
             <div>
                 <i class='bx bxs-user'></i>
-                <a href="{% url "cliente" %}" class="option">Paciente</a>
+                <a href="{% url "cliente" %}" class="option">Cliente</a>
             </div>
             <div>
                 <i class='bx bxs-user'></i>
                 <a href="{% url "medico" %}" class="option">Medico</a>
 
+            </div>
+            <div>
+                <i class='bx bx-clipboard'></i>
+                <a href="{% url "listadoDisTodos" %}" class="option">Ver agenda de medicos</a>
             </div>
             <div>
                 <i class='bx bxs-cog'></i>

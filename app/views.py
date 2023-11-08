@@ -169,6 +169,8 @@ def paciente(request):
 def tomaHoras(request):
     return render(request, "tomaHoras.html")
 
+
+
 def asignarDispo(request, rut):
     if request.method == "POST":
         form = agregarDisponibilidad(request.POST)
@@ -216,16 +218,36 @@ def listadoDisMedico(request, rut):
 
 
 
-def deshabilitarDisponibilidad(request, rut):
+def deshabilitarDisponibilidad(request, id):
     if request.method == "POST":
         data ={
-            'run': rut  
+            'disp_id': id
         }
-        print(rut)
-        response = requests.patch("https://medicocentro--juaborquez.repl.co/api/usuarios/deshabilitar", json=data)
+        response = requests.patch("https://medicocentro--juaborquez.repl.co/api/disponibilidad/deshabilitar/", json=data)
         if response.status_code == 200:
                 messages.success(request, "Disponibilidad deshabilitada")
-                return redirect(to=listadoDisMedico)
-    return render(request, 'listadoDisMedico')
+                return redirect(to=medico)
+    return render(request, 'listadoDisMedico.html')
 
+
+def deshabilitarDisponibilidadTodos(request, id):
+    if request.method == "POST":
+        data ={
+            'disp_id': id
+        }
+        response = requests.patch("https://medicocentro--juaborquez.repl.co/api/disponibilidad/deshabilitar/", json=data)
+        if response.status_code == 200:
+                messages.success(request, "Disponibilidad deshabilitada")
+                return redirect(to=listadoDisTodos)
+    return render(request, 'listadoDisMedico.html')
+
+def listadoDisTodos(request):
+    r = requests.get("https://medicocentro--juaborquez.repl.co/api/disponibilidad/")
+    if r.status_code==200:
+        data = r.json()
+        print(r)
+    else:
+        data = None
+        print("error")
+    return render(request, "listadoDisTodos.html", {"data":data})
 
