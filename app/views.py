@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 import requests
 from django.contrib import messages
 from datetime import time
-from .forms import  RegistroForm, LoginForm, AgregarMedico, agregarDisponibilidad
+from .forms import  RegistroForm, LoginForm, AgregarMedico, agregarDisponibilidad, nuevaHora, fechaHora
 # Create your views here.
 
 
@@ -12,8 +12,10 @@ def index(request):
     return render(request,'index.html')
 
 
+
 def admin(request):
     return render(request, 'admin.html')
+
 
 def tomaHoras(request):
     return render(request, 'tomaHoras.html')
@@ -250,4 +252,45 @@ def listadoDisTodos(request):
         data = None
         print("error")
     return render(request, "listadoDisTodos.html", {"data":data})
+
+
+
+def reservaHora(request):
+
+    if request.method == "POST":
+
+        form = nuevaHora(request.POST)
+        if form.is_valid():
+            data = {
+
+                'id': form.cleaned_data['especialidad'],
+
+            }
+
+
+            response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/', json=data)
+            if response.status_code == 200:
+                data_esp = response.json()
+                messages.success(request, "enviado")
+            
+                return render(request, "calendario.html", {"data":data_esp})
+            else:
+                form.add_error(None, "Error al mandar a la API")
+    else:
+        form = nuevaHora()
+
+    return render(request, "reservaHora.html", {"form": form})
+
+
+
+def calendario(request):
+
+    if request.method == "POST":
+        form = fechaHora(request.POST)
+        
+
+    else: 
+        form = fechaHora()
+
+    return render(request, "calendario.html",{"form": form})
 
