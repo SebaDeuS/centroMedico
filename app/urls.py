@@ -18,6 +18,6 @@ urlpatterns = [
     path('deshabilitarDisponibilidadTodos/<int:id>', deshabilitarDisponibilidadTodos, name='deshabilitarDisponibilidadTodos'),
     path('listadoDisTodos', listadoDisTodos, name="listadoDisTodos"),
     path("reservaHora", reservaHora, name="reservaHora"),
-    path("calendario", calendario, name="calendario")
+    path("calendario/<int:id>", calendario, name="calendario")
 ]
 

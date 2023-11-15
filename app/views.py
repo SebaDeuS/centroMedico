@@ -261,21 +261,11 @@ def reservaHora(request):
 
         form = nuevaHora(request.POST)
         if form.is_valid():
-            data = {
-
-                'id': form.cleaned_data['especialidad'],
-
-            }
-
-
-            response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/', json=data)
-            if response.status_code == 200:
-                data_esp = response.json()
-                messages.success(request, "enviado")
-            
-                return render(request, "calendario.html", {"data":data_esp})
-            else:
-                form.add_error(None, "Error al mandar a la API")
+            id = form.cleaned_data['especialidad'],
+            print(id)
+            return redirect(f'calendario/{id[0]}')
+        else:
+            form.add_error(None, "Error al mandar a la API")
     else:
         form = nuevaHora()
 
@@ -283,7 +273,11 @@ def reservaHora(request):
 
 
 
-def calendario(request):
+def calendario(request, id):
+    response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/', json={"id":id})
+    if response.status_code == 200:
+        data_esp = response.json()
+        messages.success(request, "enviado")
 
     if request.method == "POST":
         form = fechaHora(request.POST)
@@ -292,5 +286,5 @@ def calendario(request):
     else: 
         form = fechaHora()
 
-    return render(request, "calendario.html",{"form": form})
+    return render(request, "calendario.html",{"form": form, "data": data_esp})
 
