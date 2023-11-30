@@ -274,17 +274,34 @@ def reservaHora(request):
 
 
 def calendario(request, id):
+    #Disponibilidad de los medicos con especialidad seleccionada en "reservarHora"
     response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/', json={"id":id})
     if response.status_code == 200:
-        data_esp = response.json()
+        dispo_esp = response.json()
         messages.success(request, "enviado")
+    else:
+        messages.success(request, "No se consiguió recuperar las disponibilidades")
+        
 
     if request.method == "POST":
         form = fechaHora(request.POST)
-        
 
     else: 
         form = fechaHora()
 
-    return render(request, "calendario.html",{"form": form, "data": data_esp})
+    return render(request, "calendario.html",{"form": form, "data": dispo_esp})
+
+def prueba(request):
+    if request.method == 'POST':
+        selected_date = request.POST.get('date')
+        
+        # Log or print the received data
+        print(f"Received data: {request.POST}")
+        print(f"Selected date: {selected_date}")
+
+        # Process the selected date as needed
+
+        return HttpResponse("")
+    else:
+        return HttpResponse("Invalid request method")
 

@@ -40,10 +40,6 @@
                 {% csrf_token %}
                 <button id="estado" class="btn btn-primary me-2" type="submit" >Ver</button>  
               </form>
-              <form action="" method="POST">
-                {% csrf_token %} 
-                <a class="btn btn-primary me-2" href="#">Editar</a>
-              </form>
               <form action="{% url 'deshabilitarMedico' row.run %}" method="POST">
                 {% csrf_token %} 
                 <button id="estado" class="btn btn-danger" type="submit" >Deshabilitar</button> 
