@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, admin, tomaHoras, cliente, login, registroUsuario, medico, paciente, deshabilitarCliente, deshabilitarMedico,agregarMedico, tomaHoras, asignarDispo, listadoDisMedico, deshabilitarDisponibilidad, listadoDisTodos, deshabilitarDisponibilidadTodos, reservaHora, calendario, prueba
+from .views import index, admin, tomaHoras, cliente, login, registroUsuario, medico, paciente, deshabilitarCliente, deshabilitarMedico,agregarMedico, tomaHoras, asignarDispo, listadoDisMedico, deshabilitarDisponibilidad, listadoDisTodos, deshabilitarDisponibilidadTodos, reservaHora, calendario, send_confirmation_email, disponiblidadArchivo, get_disponibilidad
 
 urlpatterns = [
     path('', index, name='index'),
@@ -19,5 +19,8 @@ urlpatterns = [
     path('listadoDisTodos', listadoDisTodos, name="listadoDisTodos"),
     path("reservaHora", reservaHora, name="reservaHora"),
     path("calendario/<int:id>", calendario, name="calendario"),
+    path("confirmacionEmail", send_confirmation_email, name="confirmacionEmail"),
+    path("disponibilidadArchivo", disponiblidadArchivo, name="disponibilidadArchivo"),
+    path("getDisponibilidad/<int:id>/<str:dia>", get_disponibilidad, name="getDisponibilidad"),
 ]
 

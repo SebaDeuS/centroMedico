@@ -139,5 +139,7 @@ class nuevaHora(forms.Form):
             self.fields['especialidad'].choices = [('', 'error al recuperar la data')] 
 
 class fechaHora(forms.Form):
-
     date = forms.DateField( widget= forms.TextInput(attrs = {'class' : 'datepicker'}))
+
+class CSVDisponibilidad(forms.Form):
+    csv_file = forms.FileField()

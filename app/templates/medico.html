@@ -10,6 +10,7 @@
     <h1>Listado medicos</h1>
   </div>
     <div class="card-body d-flex justify-content-end">
+      <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#agregarDisponibilidadModal" hx-get="{% url "disponibilidadArchivo" %}" hx-target="#csv">Subir disponibilidad</button>
       <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarMedicoModal" hx-get="{% url "agregarMedico" %}" hx-target="#dialog">Agregar medico</button>
     </div>
     <table class="table table-striped">
@@ -52,23 +53,39 @@
     </table>
 
     <!-- Vertically centered modal -->
-      <div class="modal fade" id="agregarMedicoModal" tabindex="-1" aria-labelledby="agregarMedicoModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="agregarMedicoModalLabel">Agregar Medico</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
+    <div class="modal fade" id="agregarMedicoModal" tabindex="-1" aria-labelledby="agregarMedicoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="agregarMedicoModalLabel">Agregar Medico</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-              <div id="dialog" class="modal-body" hx-target="this">
-                <!--Informacion conseguida de htmx-->
-              </div>
+            <div id="dialog" class="modal-body" hx-target="this">
+              <!--Informacion conseguida de htmx-->
             </div>
           </div>
         </div>
       </div>
+    </div>
 
 
+    <!--Modal para subir archivo csv-->
+    <div class="modal fade" id="agregarDisponibilidadModal" tabindex="-1" aria-labelledby="agregarDisponibilidadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="agregarDisponibilidadModalLabel">Subir disponibilidad (CSV)</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div id="csv" class="modal-body" hx-target="this">
+              <!--Informacion conseguida de htmx-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
       
 

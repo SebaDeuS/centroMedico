@@ -1,17 +1,53 @@
 import json
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 import requests
 from django.contrib import messages
 from datetime import time
-from .forms import  RegistroForm, LoginForm, AgregarMedico, agregarDisponibilidad, nuevaHora, fechaHora
+from .forms import  RegistroForm, LoginForm, AgregarMedico, agregarDisponibilidad, nuevaHora, fechaHora, CSVDisponibilidad
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.shortcuts import render, redirect
+from django.conf import settings
+import csv
+from datetime import datetime, time, timedelta
+import calendar
+
+
 # Create your views here.
+
+def bloques_de_tiempo(hora_inicial, hora_final, minutos):
+    initial_time = datetime.strptime(hora_inicial, '%H:%M:%S').time()
+    final_time = datetime.strptime(hora_final, '%H:%M:%S').time()
+    
+    time_blocks = []
+    current_time = initial_time
+
+    while current_time <= final_time:
+        time_blocks.append(current_time)
+        current_time = (datetime.combine(datetime.min, current_time) + timedelta(minutes=minutos)).time()
+
+    return time_blocks
+
+def fechas_del_mes(anio, mes, dia):
+    primer_dia = datetime(anio, mes, 1)
+
+    primer_dia_de_la_semana = primer_dia.weekday()
+
+    offset = (dia - primer_dia_de_la_semana) % 7
+
+    target_date = primer_dia + timedelta(days=offset)
+
+    _, dias_en_mes = calendar.monthrange(anio, mes)
+
+    todas_las_fechas = [target_date + timedelta(days=7 * i) for i in range((dias_en_mes - offset) // 7 + 1)]
+
+    return todas_las_fechas 
 
 
 def index(request):
     return render(request,'index.html')
-
-
 
 def admin(request):
     return render(request, 'admin.html')
@@ -162,6 +198,35 @@ def agregarMedico(request):
     return render(request, "agregarMedicoForm.html", {"form": form})
 
 
+def disponiblidadArchivo(request):
+    if request.method == "POST":
+        form = CSVDisponibilidad(request.POST, request.FILES)
+        print(request)
+        if form.is_valid():
+            archivo = request.FILES['csv_file']
+            decoded_file = archivo.read().decode('utf-8').splitlines()
+
+            #TODO: Verificar que el "header" tiene el formato adecuado para saltarlo
+            csv_header = csv.reader(decoded_file)
+            header = next(csv_header, None)
+
+            for row in csv_header:
+                run_medico, dia_semana, hora_inicio, hora_termino, tiempo_por_consulta_min = row
+
+                data = {"run_medico":run_medico, "dia_semana": dia_semana, "hora_inicio": hora_inicio, "hora_termino": hora_termino,"tiempo_por_consulta_min": tiempo_por_consulta_min}
+
+                response = requests.post('https://medicocentro--juaborquez.repl.co/api/disponibilidad/add/', json=data)
+
+                if response.status_code != 200:
+                    messages.success(request, "Error al agregar la disponibilidad")
+                    return HttpResponse(status=204, headers={'HX-refresh': 'true'})
+            return HttpResponse(status=204, headers={'HX-refresh': 'true'})
+        else:
+            print(form.errors)
+    else:
+        form = CSVDisponibilidad()
+
+    return render(request, "disponibilidad.html", {"form": form})
 
 
 def paciente(request):
@@ -274,34 +339,90 @@ def reservaHora(request):
 
 
 def calendario(request, id):
+    anio_actual = datetime.now().year
+    mes_actual = datetime.now().month
     #Disponibilidad de los medicos con especialidad seleccionada en "reservarHora"
     response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/', json={"id":id})
     if response.status_code == 200:
         dispo_esp = response.json()
-        messages.success(request, "enviado")
     else:
         messages.success(request, "No se consiguió recuperar las disponibilidades")
-        
+    
+    #API de feriados
+    url_feriados = f'https://apis.digital.gob.cl/fl/feriados/{anio_actual}/{mes_actual}' 
+    try:
+        responseFeriados = requests.get(url_feriados, headers={'Content-Type': 'application/json', 'Accept': 'text/plain', 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:100.0) Gecko/20100101 Firefox/100.0',}, verify=True)
+        feriados = responseFeriados.json()
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+
+    feriados_fecha= {item['fecha'] for item in feriados}
+    feriados_disable = list(feriados_fecha)
+    feriados_iso= [f"{dt}T00:00:00" for dt in feriados_disable]
+
+    #Bloques de tiempo para horas
+    #info = dispo_esp[0]
+    #bloques = bloques_de_tiempo(info['hora_inicio'], info['hora_termino'], info['tiempo_por_consulta_min'])
+
+    # Fechas con disponibilidad
+    # TODO:No mostrar dias con disponibilidad ocupada
+    fechas_iso = []
+
+    dias_unicos = {item['dia_semana'] for item in dispo_esp}
+    dias_unicos = list(dias_unicos)
+    #Diccionario para usar el calendario y habilitar los dias
+    dias_numero = {
+        "lunes": 0,
+        "martes": 1,
+        "miercoles": 2,
+        "jueves": 3,
+        "viernes": 4,
+        "sabado": 5,
+        "domingo": 6,
+    }
+
+    for dia in dias_unicos:
+        filtro = 'lunes martes miercoles jueves viernes sabado'
+        dia_minus = (dia).lower()
+        if dia_minus in filtro:
+            dia_input = dias_numero[dia_minus]
+            fechas = fechas_del_mes(2023,12, dia_input)
+            fechas_iso.extend([dt.isoformat() for dt in fechas])
+
+    # Remueve los feriados de las fechas disponibles
+    for feriado in feriados_iso:
+        fechas_iso.remove(f'{feriado}')
 
     if request.method == "POST":
         form = fechaHora(request.POST)
 
+
     else: 
         form = fechaHora()
 
-    return render(request, "calendario.html",{"form": form, "data": dispo_esp})
+    return render(request, "calendario.html",{"form": form, "data": dispo_esp, "fechas": fechas_iso, "feriados": feriados_disable, "id":id})
 
-def prueba(request):
-    if request.method == 'POST':
-        selected_date = request.POST.get('date')
-        
-        # Log or print the received data
-        print(f"Received data: {request.POST}")
-        print(f"Selected date: {selected_date}")
+#Email
+def send_confirmation_email(request):
+    confirmation_link = "https://guthib.com/"
 
-        # Process the selected date as needed
+    html_message = render_to_string('confirmacion_email.html', {'confirmation_link': confirmation_link})
+    plain_message = strip_tags(html_message)
 
-        return HttpResponse("")
-    else:
-        return HttpResponse("Invalid request method")
+    send_mail(
+        'Confirma tu hora',
+        plain_message,
+        'settings.EMAIL_HOST_USER',
+        ['juanborquez.3@gmail.com'],
+        html_message=html_message,
+    )
 
+    # Redirect or render a response as needed
+    return render(request, 'confirmacion_email.html')
+
+#Tabla de disponibilidad
+def get_disponibilidad(request,id,dia):
+    response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/dia', json={"id":id, "dia":dia})
+    dispo = response.json()
+    html_fragment = render_to_string('dispo_table_fragment.html',{'data':dispo})
+    return JsonResponse({'content': html_fragment})
