@@ -391,7 +391,8 @@ def calendario(request, id):
 
     # Remueve los feriados de las fechas disponibles
     for feriado in feriados_iso:
-        fechas_iso.remove(f'{feriado}')
+        if feriado in fechas_iso:
+            fechas_iso.remove(feriado)
 
     if request.method == "POST":
         form = fechaHora(request.POST)
