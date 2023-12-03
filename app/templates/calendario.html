@@ -40,7 +40,7 @@
     <br>
     <br>
     <div id="table-body">
-        {% include "dispo_table_fragment.html" with info=info%}
+        {% include "dispo_table_fragment.html"%}
     </div>
 
 
@@ -68,22 +68,32 @@
             onChange: function(selectedDates, dateStr, instance) {
                 //there's nothing we can do.. no se pudo usar solamente htmx para conseguir el dia
                 var fecha = selectedDates[0];
+                var diaSeleccionadoParaUrl = fecha.toISOString().split('T')[0];
+                // Update the href attribute of each link with the selected date
+
                 var diaDeSemana = fecha.getDay();
                 var nombreDia = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
                 var diaSeleccionado = nombreDia[diaDeSemana];
     
                 var xhr = new XMLHttpRequest();
-                xhr.open("GET", '/getDisponibilidad/8/' + diaSeleccionado, true);
+                xhr.open("GET", '/getDisponibilidad/{{id}}/' + diaSeleccionado, true);
                 xhr.setRequestHeader('X-CSRFToken', "{{ csrf_token }}");
     
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status == 200) {
                         document.getElementById('table-body').innerHTML = xhr.responseText;
                         console.log('Updated hx-get:', '/getDisponibilidad/8/' + diaSeleccionado);
+
+                        // Cambia el parte estatica del url del fragmento html (fecha) por la seleccionada en el calendario
+                        document.querySelectorAll('.btn.btn-primary').forEach(function(link) {
+                            link.href = link.href.replace('/fecha', '/' + diaSeleccionadoParaUrl );
+                            console.log(link.href)
+                });
                     }
                 };
     
                 xhr.send();
+
             }
         });
     </script>

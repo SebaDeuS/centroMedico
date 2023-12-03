@@ -427,11 +427,12 @@ def get_disponibilidad(request,id,dia):
         bloques_iso = [dt.isoformat() for dt in bloques]
         horas = []
         for hora in bloques_iso:
-            #TODO:Cambiar dia por fecha completa
-            horas.append({"hora_inicio":hora})
+            hora_transformada = datetime.strptime(hora, "%H:%M:%S")
+            hora_final = hora_transformada + timedelta(minutes=disp['tiempo_por_consulta_min'])
+            hora_str = hora_final.strftime("%H:%M:%S")
+            horas.append({"hora_inicio": hora, "hora_termino": hora_str})
         medico_horas = {"medico":disp["run_medico"],"disponibilidad":horas}
         filas_horas.append(medico_horas)
-    print(filas_horas)
 
     #Formato de como se deberia enviar la informacion a la tabla hora
     #{"paciente_run":"20913053-3", "doctor_run":disp["run_medico"], "hora_inicio":disp["hora_inicio"], "hora_termino":disp["hora_termino"],"fecha":dia,}
@@ -439,6 +440,9 @@ def get_disponibilidad(request,id,dia):
     html_fragment = render_to_string('dispo_table_fragment.html',{'info':filas_horas})
     return HttpResponse(html_fragment)
 
-#def agregar_hora(request,drun,hini,hter,dia):
-    #response = requests.post('https://medicocentro--juaborquez.repl.co/api/hora/add', json={'paciente_run':"2091305-3", "doctor_run":drun, "hora_inicio":hini, "hora_termino": hter, "fecha":dia, "estado_hora":1})
-    #print(response)
+def agregar_hora(request,drun,hini,hter,dia):
+    response = requests.post('https://medicocentro--juaborquez.repl.co/api/hora/add', json={"paciente_run":"2091305-3", "doctor_run":drun, "hora_inicio":hini, "hora_termino": hter, "fecha":dia, "estado_hora":1})
+
+    #TODO: Ver como conseguir la informacion del usuario logeado
+    messages.success(request, "Hora enviada, revise su correo")
+    return redirect(to=index)
