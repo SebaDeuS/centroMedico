@@ -138,6 +138,7 @@ class nuevaHora(forms.Form):
         else:
             self.fields['especialidad'].choices = [('', 'error al recuperar la data')] 
 
+#TODO: Esto ya no se usa, creo...
 class fechaHora(forms.Form):
     date = forms.DateField( widget= forms.TextInput(attrs = {'class' : 'datepicker'}))
 

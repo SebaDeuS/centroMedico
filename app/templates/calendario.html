@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/es.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://unpkg.com/htmx.org@1.9.9"></script> 
@@ -24,7 +26,7 @@
                         <h2>Seleccione un dia</h2 >
                         <hr>
                         <div class="d-flex align-items-center justify-content-center">
-                            <div id="calendario" hx-get='{% url "getDisponibilidad" id 'Miercoles'%}' hx-trigger="change" hx-target="#table-body"></div>
+                            <div id="calendario" hx-trigger="change" hx-target="#table-body"></div>
                         </div>
                     </div>
                 </div>
@@ -37,25 +39,11 @@
     <br>
     <br>
     <br>
-    <table class="table table-striped">
-        <thead>
-        <tr class="table table-dark">
-            <th scope="col">Dia</th>
-            <th scope="col">Hora inicio</th>
-            <th scope="col">Hora termino</th>
-            <th scope="col">Tiempo consulta</th>
-            <th scope="col">estado</th>
-            <th scope="col">Opciones</th>
-        </tr>
-        </thead>
-        
-        <tbody id="table-body">
-            {% include "dispo_table_fragment.html" with data=data %}
-        </tbody>
-    </table>
+    <div id="table-body">
+        {% include "dispo_table_fragment.html" with info=info%}
+    </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     {% if messages %}
@@ -71,24 +59,33 @@
     {% endfor %}
     {% endif %}
     <script>
-    flatpickr("#calendario", {
-        dateFormat: "Y-m-d",
-        inline: true,
-        minDate: "today",
-        enable:{{fechas|safe}},
-        locale: {
-            firstDayOfWeek: 1
-        },
-        onChange: function(selectedDates, dateStr, instance){
-            var fecha = selectedDates[0]
-            console.log(fecha.getDay())
-            var nose = String(fecha)
-            var foo = nose.split(" ")
-            console.log(foo[0])
-        }
-    });
-
-
+        flatpickr("#calendario", {
+            dateFormat: "Y-m-d",
+            inline: true,
+            minDate: "today",
+            enable: {{ fechas|safe }},
+            locale: "es",
+            onChange: function(selectedDates, dateStr, instance) {
+                //there's nothing we can do.. no se pudo usar solamente htmx para conseguir el dia
+                var fecha = selectedDates[0];
+                var diaDeSemana = fecha.getDay();
+                var nombreDia = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado'];
+                var diaSeleccionado = nombreDia[diaDeSemana];
+    
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", '/getDisponibilidad/8/' + diaSeleccionado, true);
+                xhr.setRequestHeader('X-CSRFToken', "{{ csrf_token }}");
+    
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        document.getElementById('table-body').innerHTML = xhr.responseText;
+                        console.log('Updated hx-get:', '/getDisponibilidad/8/' + diaSeleccionado);
+                    }
+                };
+    
+                xhr.send();
+            }
+        });
     </script>
     
     

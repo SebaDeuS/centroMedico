@@ -1,5 +1,15 @@
-<tr>
-    <td>{{ item.column1 }}</td>
-    <td>{{ item.column2 }}</td>
-    <!-- Add more columns as needed -->
-</tr>
+<div class="row">
+    <p>Falta funcionalidad de los botones</p>
+    {% for hora in info %}
+    <div class="col-sm-6 mb-3 mb-sm-0">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{hora.medico}}</h5>
+            {% for disponiblidad_item in hora.disponibilidad %}
+                <a href="#" class="btn btn-primary">{{disponiblidad_item.hora_inicio}}</a>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>

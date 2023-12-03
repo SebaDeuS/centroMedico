@@ -360,9 +360,6 @@ def calendario(request, id):
     feriados_disable = list(feriados_fecha)
     feriados_iso= [f"{dt}T00:00:00" for dt in feriados_disable]
 
-    #Bloques de tiempo para horas
-    #info = dispo_esp[0]
-    #bloques = bloques_de_tiempo(info['hora_inicio'], info['hora_termino'], info['tiempo_por_consulta_min'])
 
     # Fechas con disponibilidad
     # TODO:No mostrar dias con disponibilidad ocupada
@@ -395,13 +392,9 @@ def calendario(request, id):
             fechas_iso.remove(feriado)
 
     if request.method == "POST":
-        form = fechaHora(request.POST)
+        print(request)
 
-
-    else: 
-        form = fechaHora()
-
-    return render(request, "calendario.html",{"form": form, "data": dispo_esp, "fechas": fechas_iso, "feriados": feriados_disable, "id":id})
+    return render(request, "calendario.html",{"data": dispo_esp, "fechas": fechas_iso, "feriados": feriados_disable, "id":id})
 
 #Email
 def send_confirmation_email(request):
@@ -423,7 +416,29 @@ def send_confirmation_email(request):
 
 #Tabla de disponibilidad
 def get_disponibilidad(request,id,dia):
+    filas_horas = []
+
     response = requests.get('https://medicocentro--juaborquez.repl.co/api/disponibilidad/especialidad/dia', json={"id":id, "dia":dia})
-    dispo = response.json()
-    html_fragment = render_to_string('dispo_table_fragment.html',{'data':dispo})
-    return JsonResponse({'content': html_fragment})
+    r = response.json()
+
+    #TODO: Hacer los bloques de hora
+    for disp in r:
+        bloques = bloques_de_tiempo(disp['hora_inicio'], disp['hora_termino'], disp['tiempo_por_consulta_min'])
+        bloques_iso = [dt.isoformat() for dt in bloques]
+        horas = []
+        for hora in bloques_iso:
+            #TODO:Cambiar dia por fecha completa
+            horas.append({"hora_inicio":hora})
+        medico_horas = {"medico":disp["run_medico"],"disponibilidad":horas}
+        filas_horas.append(medico_horas)
+    print(filas_horas)
+
+    #Formato de como se deberia enviar la informacion a la tabla hora
+    #{"paciente_run":"20913053-3", "doctor_run":disp["run_medico"], "hora_inicio":disp["hora_inicio"], "hora_termino":disp["hora_termino"],"fecha":dia,}
+
+    html_fragment = render_to_string('dispo_table_fragment.html',{'info':filas_horas})
+    return HttpResponse(html_fragment)
+
+#def agregar_hora(request,drun,hini,hter,dia):
+    #response = requests.post('https://medicocentro--juaborquez.repl.co/api/hora/add', json={'paciente_run':"2091305-3", "doctor_run":drun, "hora_inicio":hini, "hora_termino": hter, "fecha":dia, "estado_hora":1})
+    #print(response)
