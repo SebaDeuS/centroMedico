@@ -423,7 +423,10 @@ def get_disponibilidad(request,id,dia):
     for disp in r:
         medico_info = requests.get('https://medicocentro--juaborquez.repl.co/api/usuarios/buscar/', json={"run":disp["run_medico"]})
         r_medico = medico_info.json()
-        print(r_medico["nombre"])
+
+        hora_info = requests.get('https://medicocentro--juaborquez.repl.co/api/hora/medico', json={"run":disp["run_medico"]})
+        r_hora = hora_info.json()
+        print(r_hora)
 
         bloques = bloques_de_tiempo(disp['hora_inicio'], disp['hora_termino'], disp['tiempo_por_consulta_min'])
         bloques_iso = [dt.isoformat() for dt in bloques]
@@ -446,7 +449,6 @@ def agregar_hora(request,drun,hini,hter,dia):
     response = requests.post('https://medicocentro--juaborquez.repl.co/api/hora/add', json={"paciente_run":"2091305-3", "doctor_run":drun, "hora_inicio":hini, "hora_termino": hter, "fecha":dia, "estado_hora":1})
 
     #TODO: Ver como conseguir la informacion del usuario logeado
-    send_confirmation_email()
     messages.success(request, "Hora enviada, revise su correo")
 
     return redirect(to=index)
