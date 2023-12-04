@@ -1,11 +1,18 @@
-<div class="row">
+
+
+
+
+<div class="row ">
     {% for hora in info %}
-    <div class="col-sm-6 mb-3 mb-sm-0">
-        <div class="card">
+    <div class="col-sm-6 mb-3 mb-sm-0 pb-4">
+        <div class="card ">
             <div class="card-body">
-                <h5 class="card-title">{{hora.medico}}</h5>
+                <h5 class="card-title pb-3">Doctor(a): {{hora.medico}}</h5>
+                <h6>Horas disponibles</h6>
             {% for disponiblidad_item in hora.disponibilidad %}
-                <a href="/agregarHora/{{hora.medico}}/{{disponiblidad_item.hora_inicio}}/{{disponiblidad_item.hora_termino}}/fecha" hx-trigger="click" class="btn btn-primary">{{disponiblidad_item.hora_inicio}}</a>
+                <div style="display: inline-block;  padding-bottom: 5px;    ">
+                    <a  href="/agregarHora/{{hora.medico}}/{{disponiblidad_item.hora_inicio}}/{{disponiblidad_item.hora_termino}}/fecha" hx-trigger="click" class="btn btn-primary">{{disponiblidad_item.hora_inicio}}</a>
+                </div>
             {% endfor %}
             </div>
         </div>
