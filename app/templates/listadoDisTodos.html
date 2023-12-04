@@ -19,6 +19,7 @@
     <table class="table table-striped">
         <thead>
             <tr class="table table-dark">
+            <th scope="col">Medico</th>
             <th scope="col">Dia</th>
             <th scope="col">Hora inicio</th>
             <th scope="col">Hora termino</th>
@@ -31,11 +32,17 @@
         <tbody>
             {% for row in data%}
             <tr class="table table-default">
+            <td>{{row.run_medico}}</td>
             <td>{{row.dia_semana}}</td>
             <td>{{row.hora_inicio}}</td>
             <td>{{row.hora_termino}}</td>
             <td>{{row.tiempo_por_consulta_min}}</td>
-            <td>{{row.estado}}</td>
+            {% if row.estado == True %}
+            <td>Habilitado </td>
+            {% else %}
+            <td>Deshabilitado</td>
+            {% endif %}
+
             <td>
                 <div class="d-flex">
                     <form action="{% url 'deshabilitarDisponibilidadTodos' row.disp_id %}" method="POST">

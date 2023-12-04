@@ -16,7 +16,7 @@
     <table class="table table-striped">
       <thead>
         <tr class="table table-dark">
-          <th scope="col">run</th>
+          <th scope="col">Run</th>
           <th scope="col">Nombre</th>
           <th scope="col">Especialidad</th>
           <th scope="col">Correo</th>
@@ -39,7 +39,7 @@
               </form>
               <form action="{% url "listadoDisMedico" row.run %}" method="POST">
                 {% csrf_token %}
-                <button id="estado" class="btn btn-primary me-2" type="submit" >Ver</button>  
+                <button id="estado" class="btn btn-primary me-2" type="submit" >Ver agenda</button>  
               </form>
               <form action="{% url 'deshabilitarMedico' row.run %}" method="POST">
                 {% csrf_token %} 

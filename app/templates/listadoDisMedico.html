@@ -25,7 +25,7 @@
             <th scope="col">Hora inicio</th>
             <th scope="col">Hora termino</th>
             <th scope="col">Tiempo consulta</th>
-            <th scope="col">estado</th>
+            <th scope="col">Estado</th>
             <th scope="col">Opciones</th>
             </tr>
         </thead>
@@ -37,12 +37,16 @@
             <td>{{row.hora_inicio}}</td>
             <td>{{row.hora_termino}}</td>
             <td>{{row.tiempo_por_consulta_min}}</td>
-            <td>{{row.estado}}</td>
+            {% if row.estado == True %}
+            <td>Habilitado </td>
+            {% else %}
+            <td>Deshabilitado</td>
+            {% endif %}
             <td>
                 <div class="d-flex">
                     <form action="{% url 'deshabilitarDisponibilidad' row.disp_id %}" method="POST">
                         {% csrf_token %} 
-                        <button id="estado" class="btn btn-danger" type="submit" >Deshabilitar</button> 
+                        <button id="estado" class="btn btn-danger" type="submit">Deshabilitar</button> 
                     </form>
                 </div>
             </td>
