@@ -254,7 +254,6 @@ def asignarDispo(request, rut):
                 'estado' : True,
                 'tiempo_por_consulta_min' : form.cleaned_data['tiempo_consulta'],
             }
-
             response = requests.post('https://medicocentro--juaborquez.repl.co/api/disponibilidad/add/', json=data)
             
             if response.status_code == 200:
@@ -263,7 +262,6 @@ def asignarDispo(request, rut):
                 return redirect(to=medico)
             else:
                 form.add_error(None, "Error al agregar disponibilidad en la API")
-        
     else:
         form = agregarDisponibilidad()
     return render(request, "asignarDisponibilidad.html", {"form" : form})
@@ -397,7 +395,7 @@ def calendario(request, id):
     return render(request, "calendario.html",{"data": dispo_esp, "fechas": fechas_iso, "feriados": feriados_disable, "id":id})
 
 #Email
-def send_confirmation_email(request):
+def send_confirmation_email(request,correo):
     confirmation_link = "https://guthib.com/"
 
     html_message = render_to_string('confirmacion_email.html', {'confirmation_link': confirmation_link})
@@ -407,7 +405,7 @@ def send_confirmation_email(request):
         'Confirma tu hora',
         plain_message,
         'settings.EMAIL_HOST_USER',
-        ['juanborquez.3@gmail.com'],
+        [correo],
         html_message=html_message,
     )
 
@@ -423,6 +421,10 @@ def get_disponibilidad(request,id,dia):
 
     #TODO: Hacer los bloques de hora
     for disp in r:
+        medico_info = requests.get('https://medicocentro--juaborquez.repl.co/api/usuarios/buscar/', json={"run":disp["run_medico"]})
+        r_medico = medico_info.json()
+        print(r_medico["nombre"])
+
         bloques = bloques_de_tiempo(disp['hora_inicio'], disp['hora_termino'], disp['tiempo_por_consulta_min'])
         bloques_iso = [dt.isoformat() for dt in bloques]
         horas = []
@@ -431,7 +433,7 @@ def get_disponibilidad(request,id,dia):
             hora_final = hora_transformada + timedelta(minutes=disp['tiempo_por_consulta_min'])
             hora_str = hora_final.strftime("%H:%M:%S")
             horas.append({"hora_inicio": hora, "hora_termino": hora_str})
-        medico_horas = {"medico":disp["run_medico"],"disponibilidad":horas}
+        medico_horas = {"medico":disp["run_medico"],"nombre":r_medico["nombre"],"disponibilidad":horas}
         filas_horas.append(medico_horas)
 
     #Formato de como se deberia enviar la informacion a la tabla hora
@@ -444,5 +446,7 @@ def agregar_hora(request,drun,hini,hter,dia):
     response = requests.post('https://medicocentro--juaborquez.repl.co/api/hora/add', json={"paciente_run":"2091305-3", "doctor_run":drun, "hora_inicio":hini, "hora_termino": hter, "fecha":dia, "estado_hora":1})
 
     #TODO: Ver como conseguir la informacion del usuario logeado
+    send_confirmation_email()
     messages.success(request, "Hora enviada, revise su correo")
+
     return redirect(to=index)
